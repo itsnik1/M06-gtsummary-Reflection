@@ -1,0 +1,131 @@
+---
+title: "Summary Tables with gtsummary"
+subtitle: "Revealjs Presentation"
+author: "Nik Sahami"
+institute: "IBM 6400, Cal Poly Pomona"
+date: today
+date-format: "MMMM D, YYYY"
+format:
+  revealjs:
+    theme: serif
+    width: 1600
+    height: 900
+    footer: "M08 | gtsummary Reflection"
+    transition: slide
+    transition-speed: default
+    incremental: false
+    toc: true
+    toc-depth: 1
+    slide-number: true
+    scrollable: true
+    smaller: true
+    code-fold: false
+    code-overflow: wrap
+    number-sections: false
+    embed-resources: true
+editor: visual
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+
+library(tidyverse)
+library(gtsummary)
+library(gt)
+library(broom)
+library(broom.helpers)
+```
+
+# 1. Understanding gtsummary
+
+**Prompt 1: Summarize the package's capabilities as explained by the speaker. How may the {gtsummary} benefit you for your school work or career?**
+
+The `gtsummary` package makes it easier to organize and present statistical results without having to format everything manually.
+
+Some of the main functions include:
+
+- `tbl_summary()` - creates descriptive statistics
+- `tbl_cross()` and `add_p()` - compare categorical variables
+- `tbl_regression()` - organizes regression results
+- `tbl_merge()` and `tbl_stack()` - combine tables
+
+I think this package will be especially useful for our CEP project because we're working with a lot of student data and need to communicate our findings to the Collins College. It would also be useful in marketing analytics, where being able to present data clearly is just as important as actually analyzing it.
+
+# 2. Comparing Table Packages
+
+**Prompt 2.1: How does {gtsummary} differ from {gt} and {gtExtras}?**
+
+The main difference is that each package serves a slightly different purpose.
+
+| Package     | Main Purpose                                 |
+|-------------|----------------------------------------------|
+| `gt`        | Formats tables                               |
+| `gtExtras`  | Adds visual elements to tables               |
+| `gtsummary` | Automatically summarizes statistical results |
+
+`gt` is useful for formatting tables that have already been created, while `gtExtras` adds more visual customization. `gtsummary` is more focused on statistical analysis because it can calculate descriptive statistics, comparisons, and regression results automatically.
+
+# 3. Three New Things I Learned
+
+**Prompt 2.2: Give three things you learned newly that were not explained in the lecture in Step 1.**
+
+1.  **`inline_text()`** - pulls results from a table into the written explanation. This allows the reported statistics to update automatically when the data changes.
+
+2.  **`tbl_strata()`** - creates separate tables for different groups. For our CEP, this could help compare different student populations more efficiently.
+
+3.  **`tbl_uvregression()`** - runs separate regression models for multiple predictors. This could help identify which variables may be useful in a larger model.
+
+My biggest takeaway is that these functions don't just make the tables look better. They also make the analysis and reporting process more efficient and reproducible.
+
+# 4. Cross-Tabulation
+
+**Prompt 3: Apply what you learned to your MSDM CEP data. Choose two appropriate variables for cross-tabulation and show if the two variables are associated or not. Use appropriate statistics to test if the two variables are associated. Code, produce the table, and interpret the result.**
+
+For this analysis, I looked at first-generation status and whether a student was retained after one year. The data covers the Fall 2018 through Fall 2025 cohorts.
+
+```{r}
+cep_data <- read_csv("cep_retention_analysis.csv") |> 
+  mutate(first_gen = factor(first_gen,
+                            levels = c("Not First Generation",
+                                       "First Generation")))
+
+cep_data |> 
+  tbl_cross(row = first_gen,
+            col = retained,
+            percent = "row") |> 
+  add_p(test = "chisq.test.no.correct") |> 
+  bold_labels()
+```
+
+The analysis file combines the overall and first-generation cohort counts from Fall 2018 through Fall 2025. The 642 rows were reconstructed from aggregated counts and are not original student-level observations.
+
+First-generation students had an 81.8% one-year retention rate, compared to 90.4% for students who were not first generation. The association was statistically significant, $\chi^2(1) = 9.90$, $p = .002$. This shows an association, but it does not prove that first-generation status caused the difference.
+
+# 5. Multiple Regression
+
+**Prompt 4: Using the MSDM CEP data, run multiple regression. The dependent variable can be continuous or dichotomous. Regress a dependent variable on a set of independent variables. Code, produce the table, and interpret the result.**
+
+Since retention has two possible outcomes, I used logistic regression to examine whether first-generation status and cohort year are associated with one-year retention.
+
+```{r}
+retention_model <- glm(retained_binary ~ first_gen + cohort_year,
+                       data = cep_data,
+                       family = binomial)
+
+retention_model |> 
+  tbl_regression(exponentiate = T) |> 
+  bold_labels()
+```
+
+After accounting for cohort year, first-generation students had lower odds of one-year retention (OR = 0.47, 95% CI \[0.30, 0.76\], $p = .002$). Cohort year was not statistically significant (OR = 0.92, $p = .114$).
+
+The results suggest a retention gap, but they should be interpreted as exploratory because the observations were reconstructed from aggregated cohort counts.
+
+# Appendix
+
+- [GitHub Repository](https://github.com/itsnik1/M06-gtsummary-Reflection)
+- GitHub Pages
