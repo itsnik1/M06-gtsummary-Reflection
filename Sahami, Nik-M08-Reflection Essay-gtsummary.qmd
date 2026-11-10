@@ -79,7 +79,7 @@ The main difference is that each package serves a slightly different purpose.
 
 3.  **`tbl_uvregression()`** - runs separate regression models for multiple predictors. This could help identify which variables may be useful in a larger model.
 
-My biggest takeaway is that these functions don't just make the tables look better. They also make the analysis and reporting process more efficient and reproducible.
+My biggest takeaway is that these functions do more than just make the tables look better. They also make the analysis and reporting process more efficient and reproducible.
 
 # 4. Cross-Tabulation
 
@@ -121,11 +121,11 @@ retention_model |>
   bold_labels()
 ```
 
-After accounting for cohort year, first-generation students had lower odds of one-year retention (OR = 0.47, 95% CI \[0.30, 0.76\], $p = .002$). Cohort year was not statistically significant (OR = 0.92, $p = .114$).
+The odds ratio was 0.47, with a 95% confidence interval from 0.29 to 0.75, and the result was statistically significant ($p = .002$). Cohort year was not statistically significant (OR = 0.92, $p = .114$).
 
 The results suggest a retention gap, but they should be interpreted as exploratory because the observations were reconstructed from aggregated cohort counts.
 
 # Appendix
 
 - [GitHub Repository](https://github.com/itsnik1/M06-gtsummary-Reflection)
-- GitHub Pages
+- [GitHub Pages](https://itsnik1.github.io/M06-gtsummary-Reflection/)
