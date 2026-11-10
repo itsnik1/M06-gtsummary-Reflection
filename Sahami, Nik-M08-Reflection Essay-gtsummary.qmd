@@ -77,7 +77,7 @@ The main difference is that each package serves a slightly different purpose.
 
 2.  **`tbl_strata()`** - creates separate tables for different groups. For our CEP, this could help compare different student populations more efficiently.
 
-3.  **`tbl_uvregression()`** - runs separate regression models for multiple predictors. This could help identify which variables may be useful in a larger model.
+3. **`show_header_names()`** - shows the hidden column names inside a `gtsummary` table. This can help identify the correct columns before changing headers or other parts of the table.
 
 My biggest takeaway is that these functions do more than just make the tables look better. They also make the analysis and reporting process more efficient and reproducible.
 
